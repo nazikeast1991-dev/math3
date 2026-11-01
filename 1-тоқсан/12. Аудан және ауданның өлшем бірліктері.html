@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>Аудан және ауданның өлшем бірліктері</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap">
+<style>
+/* Layout: one centered column, a notebook-grid page, one card per screen */
+:root{
+  color-scheme: light;
+  --bg:#fdf6e9; --grid:#f1e4cc; --paper:#ffffff; --ink:#2b2340; --muted:#6b6280;
+  --sun:#ffb21e; --berry:#e8456b; --sky:#2f8fe8;
+  --a:#1f9d55; --a-soft:#e3f6ea; --b:#e07b00; --b-soft:#fff0dc; --c:#7b3fd1; --c-soft:#efe6fd;
+  --ok:#1f9d55; --ok-soft:#e3f6ea; --bad:#d63a4a; --bad-soft:#fde7ea;
+  --font:"Nunito", "Segoe UI", Roboto, Arial, sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:18px;line-height:1.45;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;}
+.wrap{max-width:640px;margin:0 auto;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:16px}
+.card{background:var(--paper);border-radius:22px;padding:22px 20px;box-shadow:0 4px 0 #e7d7ba;border:2px solid #efe1c6}
+.num,.opt-text,.q-text{font-variant-numeric:tabular-nums lining-nums}
+.nb{white-space:nowrap}
+button{font-family:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+
+/* start */
+.badge{display:inline-block;background:var(--sun);color:var(--ink);font-weight:900;font-size:14px;letter-spacing:.06em;
+  text-transform:uppercase;padding:5px 12px;border-radius:999px}
+h1{font-size:28px;line-height:1.2;margin:12px 0 6px;font-weight:900;text-wrap:balance}
+.goals{margin:14px 0 0;padding:14px 16px;background:#fff8e6;border-radius:14px;border:2px dashed #f4cf7a}
+.goals h2{font-size:15px;margin:0 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.goal{margin:0 0 8px;font-size:17px}
+.goal:last-child{margin:0}
+.goal b{color:var(--sky);white-space:nowrap}
+label{display:block;font-weight:800;margin:18px 0 8px}
+input[type=text]{width:100%;font:inherit;font-size:20px;padding:14px 16px;border-radius:14px;border:2px solid #d9cdb4;background:#fff;color:var(--ink)}
+.big{width:100%;border:0;border-radius:16px;padding:16px;font-size:21px;font-weight:900;color:#fff;background:var(--berry);
+  box-shadow:0 5px 0 #b72e50;margin-top:16px;transition:transform .08s}
+.big:active{transform:translateY(3px);box-shadow:0 2px 0 #b72e50}
+.big:disabled{background:#cfc6d8;box-shadow:0 5px 0 #b3a9be;cursor:not-allowed}
+.hint{font-size:15px;color:var(--muted);margin:8px 0 0;min-height:1.4em}
+.levels{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+/* level chip */
+.lv{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:15px;padding:5px 12px;border-radius:999px;white-space:nowrap}
+.lv::before{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.lv-A{color:var(--a);background:var(--a-soft)}
+.lv-B{color:var(--b);background:var(--b-soft)}
+.lv-C{color:var(--c);background:var(--c-soft)}
+
+/* quiz */
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.who{font-weight:800;color:var(--muted);font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.count{font-weight:900;font-size:20px;white-space:nowrap}
+.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.dot{height:12px;border-radius:6px;background:#eadfca;border:0;padding:0}
+.dot.done{background:var(--sky)}
+.dot.cur{outline:3px solid var(--sun);outline-offset:1px}
+.qcard{border-top:8px solid var(--a)}
+.qcard.B{border-top-color:var(--b)} .qcard.C{border-top-color:var(--c)}
+.qnum{font-weight:900;color:var(--muted);font-size:15px;margin-left:8px}
+.q-text{font-size:22px;font-weight:800;margin:14px 0 18px;line-height:1.4;overflow-wrap:anywhere}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:#fff;border:3px solid #e6dcc8;border-radius:16px;
+  padding:12px 14px;font-size:21px;font-weight:800;color:var(--ink);min-height:62px}
+.opt .L{flex:0 0 40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#f3ecdf;font-weight:900;font-size:19px}
+.opt-text{min-width:0;flex:1}
+.opt.sel{border-color:var(--sky);background:#e9f3fd}
+.opt.sel .L{background:var(--sky);color:#fff}
+.nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nbtn{border:0;border-radius:14px;padding:14px 10px;font-size:18px;font-weight:900;background:#fff;color:var(--ink);border:2px solid #d9cdb4}
+.nbtn:disabled{opacity:.4;cursor:not-allowed}
+.nbtn.go{background:var(--sky);color:#fff;border-color:var(--sky)}
+.finish{background:var(--a);box-shadow:0 5px 0 #157a40}
+.finish:active{box-shadow:0 2px 0 #157a40}
+.left{text-align:center;font-weight:700;color:var(--muted);font-size:15px;margin:0}
+
+/* result */
+.res-head{text-align:center}
+.res-name{font-size:26px;font-weight:900;margin:6px 0 2px;overflow-wrap:anywhere}
+.res-topic{color:var(--muted);font-weight:700;margin:0 0 14px}
+.score{font-size:64px;font-weight:900;line-height:1;margin:6px 0;color:var(--berry)}
+.score small{font-size:28px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:#fff8e6;border-radius:14px;padding:10px;text-align:center}
+.stat b{display:block;font-size:26px}
+.stat span{font-size:14px;color:var(--muted);font-weight:700}
+.cheer{font-size:19px;font-weight:800;margin:14px 0 0}
+.date{font-size:14px;color:var(--muted);margin-top:8px}
+.rev{display:flex;flex-direction:column;gap:10px}
+.ri{border-radius:16px;padding:14px;border:2px solid}
+.ri.ok{background:var(--ok-soft);border-color:#a6dfbc}
+.ri.bad{background:var(--bad-soft);border-color:#f2b3bb}
+.ri-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-weight:900}
+.mark{font-size:15px;padding:3px 10px;border-radius:999px;color:#fff;white-space:nowrap}
+.ok .mark{background:var(--ok)} .bad .mark{background:var(--bad)}
+.ri-q{font-weight:800;margin:8px 0 6px;overflow-wrap:anywhere}
+.colc{display:inline-grid;justify-items:end;font-family:"Courier New",monospace;font-weight:700;font-size:22px;line-height:1.25;background:#fff;border-radius:12px;padding:8px 16px;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.colc .ln{border-top:2.5px solid var(--ink);width:100%;margin:2px 0}
+.colc span{white-space:pre}
+.fig{display:flex;justify-content:center;margin:12px 0 4px}
+.fig svg{width:100%;max-width:320px;height:auto;display:block}
+.ri .fig svg{max-width:240px}
+.ri p{margin:4px 0;font-size:17px}
+.ri .ex{color:var(--muted)}
+.support{margin:6px 0 0;font-size:16px;font-weight:700;color:var(--bad)}
+h3{margin:0;font-size:20px}
+@media (max-width:380px){
+  body{font-size:17px}
+  h1{font-size:24px}
+  .q-text{font-size:20px}
+  .opt{font-size:19px;padding:10px 12px}
+  .opt .L{flex-basis:36px;height:36px}
+  .score{font-size:54px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap" id="app"></div>
+
+<script>
+const GAME = {"no": "12", "topic": "Аудан және ауданның өлшем бірліктері", "goals": [["3.1.3.1", "Ауданы болатын нысандарды атау және ауданды өлшеуге арналған өлшемдер мен құралдарды таңдап алу, палеткамен өлшеу."], ["3.1.3.3", "См², дм², м² шамаларын салыстыру және амалдар орындау."]], "questions": [{"lv": "A", "q": "Ауданды өлшейтін бірлікті таңда.", "o": ["см", "см²", "кг", "мин"], "a": 1, "e": "Аудан шаршы бірліктермен өлшенеді: мысалы, см²."}, {"lv": "A", "q": "1 дм² неше см²-ге тең?", "o": ["1 000 см²", "10 см²", "100 см²", "1 см²"], "a": 2, "e": "1 дм² = 100 см²."}, {"lv": "A", "q": "1 м² неше дм²-ге тең?", "o": ["10 дм²", "1 дм²", "100 дм²", "1 000 дм²"], "a": 2, "e": "1 м² = 100 дм²."}, {"lv": "A", "q": "Қайсысы беттің ауданын тікелей өлшеуге арналған?", "o": ["Палетка", "Таразы", "Сағат", "Термометр"], "a": 0, "e": "Палетка — бірдей шаршыларға бөлінген мөлдір тор. Оның көмегімен ауданды өлшейді."}, {"lv": "A", "q": "Палеткада боялған бөлік ауданы 1 см² болатын 6 толық шаршыны алып жатыр. Боялған бөліктің ауданын тап.", "o": ["7 см²", "6 см²", "12 см²", "5 см²"], "a": 1, "e": "6 · 1 = 6 см²."}, {"lv": "A", "q": "3 дм² □ 250 см². Дұрыс таңбаны таңда.", "o": [">", "<", "−", "="], "a": 0, "e": "3 дм² = 300 см². 300 см² > 250 см²."}, {"lv": "B", "q": "2 дм² + 40 см² өрнегінің мәнін см²-пен тап.", "o": ["204 см²", "600 см²", "42 см²", "240 см²"], "a": 3, "e": "2 дм² = 200 см². 200 + 40 = 240 см²."}, {"lv": "B", "q": "5 м² − 200 дм² өрнегінің мәнін дм²-пен тап.", "o": ["400 дм²", "200 дм²", "700 дм²", "300 дм²"], "a": 3, "e": "5 м² = 500 дм². 500 − 200 = 300 дм²."}, {"lv": "C", "q": "Торда әр шаршының ауданы 1 см². Тіктөртбұрышты бөлікте 4 қатар, әр қатарда 5 шаршы бар. Оның 6 шаршысы боялмаған. Боялған бөліктің ауданын тап.", "o": ["20 см²", "14 см²", "26 см²", "10 см²"], "a": 1, "e": "4 · 5 = 20 шаршы. 20 − 6 = 14 см²."}, {"lv": "C", "q": "Қай қосынды 1 дм²-ге тең?", "o": ["60 см² + 40 см²", "70 см² + 40 см²", "60 см² + 30 см²", "50 см² + 40 см²"], "a": 0, "e": "1 дм² = 100 см². 60 + 40 = 100."}]};
+const LETTERS = ["A","B","C","D"];
+const LVNAME = {A:"А деңгейі", B:"В деңгейі", C:"С деңгейі"};
+let state = {name:"", cur:0, answers:Array(GAME.questions.length).fill(null), screen:"start"};
+const app = document.getElementById("app");
+
+// Keep numbers and expressions from breaking or "jumping": join digit groups and operators with non-breaking spaces
+function fmt(s){
+  s = String(s);
+  s = s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  for(let i=0;i<3;i++) s = s.replace(/(\d) (\d{3})(?!\d)/g,"$1 $2");
+  s = s.replace(/ ([+−\-·:=|]|&lt;|&gt;) /g," $1 ");
+  s = s.replace(/(\S) ?(□)/g,"$1 $2").replace(/(□) /g,"$1 ");
+  s = s.replace(/\{[^}]*\}/g, m=>m.replace(/ /g," "));
+  s = s.replace(/(\d) (мм|см|дм|м|км|кг|г|л|теңге|мин|сағ)(?=[²\s.,;:)]|$)/g,"$1 $2");
+  return s;
+}
+function colHTML(c){
+  const w=Math.max(c[0].length,c[1].length+2,c[2].length);
+  const pad=(t)=>t.padStart(w," ");
+  return `<div class="colc" aria-label="Бағанмен көбейту"><span>${pad(c[0])}</span><span>${pad("× "+c[1])}</span><div class="ln"></div><span>${pad(c[2])}</span></div>`;
+}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+function render(){
+  if(state.screen==="start") renderStart();
+  else if(state.screen==="quiz") renderQuiz();
+  else renderResult();
+  window.scrollTo(0,0);
+}
+
+function renderStart(){
+  app.innerHTML = `
+  <div class="card">
+    <span class="badge">3-сынып · Математика${GAME.quarter?" · "+esc(GAME.quarter):""} · <span class="nb">${esc(GAME.no)}-ойын</span></span>
+    <h1>${fmt(GAME.topic)}</h1>
+    <div class="goals">
+      <h2>Оқу мақсаттары</h2>
+      ${GAME.goals.map(g=>`<p class="goal"><b>${esc(g[0])}</b> — ${fmt(g[1])}</p>`).join("")}
+    </div>
+    <div class="levels">
+      <span class="lv lv-A">А деңгейі · 1–6</span>
+      <span class="lv lv-B">В деңгейі · 7–8</span>
+      <span class="lv lv-C">С деңгейі · 9–10</span>
+    </div>
+    <form id="f" autocomplete="off">
+      <label for="nm">Оқушының аты</label>
+      <input type="text" id="nm" maxlength="40" placeholder="Атыңды жаз" value="${esc(state.name)}">
+      <p class="hint" id="hint">10 сұрақ · әр дұрыс жауап — 1 балл</p>
+      <button class="big" id="go" type="submit" ${state.name.trim()?"":"disabled"}>Бастау ▶</button>
+    </form>
+  </div>`;
+  const nm=document.getElementById("nm"), go=document.getElementById("go");
+  nm.addEventListener("input",()=>{state.name=nm.value; go.disabled=!nm.value.trim();});
+  document.getElementById("f").addEventListener("submit",e=>{
+    e.preventDefault();
+    if(!nm.value.trim()){document.getElementById("hint").textContent="Алдымен атыңды жаз 🙂";nm.focus();return;}
+    state.name=nm.value.trim(); state.screen="quiz"; state.cur=0; render();
+  });
+}
+
+function renderQuiz(){
+  const n=GAME.questions.length, q=GAME.questions[state.cur], i=state.cur;
+  const answered=state.answers.filter(a=>a!==null).length;
+  const allDone=answered===n;
+  app.innerHTML = `
+  <div class="top">
+    <span class="who">👤 ${esc(state.name)}</span>
+    <span class="count num">${i+1}/${n}</span>
+  </div>
+  <div class="dots">${GAME.questions.map((_,k)=>`<button class="dot ${state.answers[k]!==null?"done":""} ${k===i?"cur":""}" data-k="${k}" aria-label="${k+1}-сұрақ"></button>`).join("")}</div>
+  <div class="card qcard ${q.lv}">
+    <span class="lv lv-${q.lv}">${LVNAME[q.lv]}</span><span class="qnum">${i+1}-сұрақ</span>
+    ${q.img?`<div class="fig">${q.img}</div>`:""}
+    <div class="q-text">${fmt(q.q)}</div>
+    <div class="opts">
+      ${q.o.map((o,k)=>`<button class="opt ${state.answers[i]===k?"sel":""}" data-o="${k}"><span class="L">${LETTERS[k]}</span><span class="opt-text">${fmt(o)}</span></button>`).join("")}
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nbtn" id="prev" ${i===0?"disabled":""}>◀ Алдыңғы</button>
+    <button class="nbtn go" id="next" ${i===n-1?"disabled":""}>Келесі ▶</button>
+  </div>
+  ${allDone?`<button class="big finish" id="fin">Аяқтау ✔</button>`:`<p class="left">Жауап берілді: ${answered}/${n}. «Аяқтау» батырмасы барлық сұраққа жауап бергенде шығады.</p>`}
+  `;
+  app.querySelectorAll(".opt").forEach(b=>b.addEventListener("click",()=>{
+    state.answers[i]=+b.dataset.o; renderQuiz();
+  }));
+  app.querySelectorAll(".dot").forEach(b=>b.addEventListener("click",()=>{state.cur=+b.dataset.k;render();}));
+  document.getElementById("prev").onclick=()=>{if(state.cur>0){state.cur--;render();}};
+  document.getElementById("next").onclick=()=>{if(state.cur<n-1){state.cur++;render();}};
+  const fin=document.getElementById("fin");
+  if(fin) fin.onclick=()=>{state.screen="result";render();};
+}
+
+function renderResult(){
+  const n=GAME.questions.length;
+  let score=0;
+  GAME.questions.forEach((q,k)=>{ if(state.answers[k]===q.a) score++; });
+  const pct=Math.round(score/n*100);
+  const cheer = score===n?"Керемет! Барлығы дұрыс! 🌟":score>=8?"Өте жақсы! Жарайсың! 🎉":score>=5?"Жақсы! Қателерді қарап шық, келесіде одан да жақсы болады 💪":"Берілме! Түсіндірмелерді оқып, қайта орындап көр 🌱";
+  const d=new Date(), date=String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+"."+d.getFullYear();
+  app.innerHTML = `
+  <div class="card res-head">
+    <span class="badge">Нәтиже</span>
+    <div class="res-name">${esc(state.name)}</div>
+    <p class="res-topic">${fmt(GAME.topic)}</p>
+    <div class="score num">${score}<small> / ${n} балл</small></div>
+    <div class="stats">
+      <div class="stat"><b class="num">${score}</b><span>дұрыс жауап</span></div>
+      <div class="stat"><b class="num">${pct}%</b><span>нәтиже</span></div>
+    </div>
+    <p class="cheer">${cheer}</p>
+    <p class="date">3-сынып · Математика${GAME.quarter?" · "+esc(GAME.quarter):""} · <span class="nb">${esc(GAME.no)}-ойын</span> · ${date}</p>
+  </div>
+  <div class="card">
+    <h3>Жауаптарды тексер</h3>
+  </div>
+  <div class="rev">
+  ${GAME.questions.map((q,k)=>{
+    const u=state.answers[k], ok=u===q.a;
+    return `<div class="ri ${ok?"ok":"bad"}">
+      <div class="ri-top"><span>${k+1}. <span class="lv lv-${q.lv}">${LVNAME[q.lv]}</span></span><span class="mark">${ok?"✔ 1 балл":"✘ 0 балл"}</span></div>
+      <div class="ri-q">${fmt(q.q)}</div>
+      ${q.img?`<div class="fig">${q.img}</div>`:""}
+      ${ok?"":`<p>Сенің жауабың: <b>${LETTERS[u]}) ${fmt(q.o[u])}</b></p>`}
+      <p>Дұрыс жауап: <b>${LETTERS[q.a]}) ${fmt(q.o[q.a])}</b></p>
+      <p class="ex">${fmt(q.e)}</p>
+      ${q.col?colHTML(q.col):""}
+      ${ok?"":`<p class="support">Ештеңе етпейді, енді сен мұны білесің! 👍</p>`}
+    </div>`;}).join("")}
+  </div>
+  <button class="big" id="again">↻ Қайта орындау</button>
+  `;
+  document.getElementById("again").onclick=()=>{
+    state.answers=Array(n).fill(null); state.cur=0; state.screen="start"; render();
+  };
+}
+render();
+</script>
+
+</body>
+</html>
